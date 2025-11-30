@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>옷장AI 코디 - ClozAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-bounce { animation: bounce 2s infinite; }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin { animation: spin 1s linear infinite; }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- 홈 화면 -->
+    <div id="home-view" class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full text-center text-white space-y-8">
+            <div class="animate-bounce">
+                <svg class="w-24 h-24 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+            </div>
+            <h1 class="text-6xl font-bold mb-4">옷장AI 코디</h1>
+            <p class="text-2xl font-light mb-8">ClozAI</p>
+            <p class="text-xl mb-12">장농 사진 한 장으로 완성되는 나만의 스타일</p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button onclick="document.getElementById('fileInput').click()" class="bg-white text-purple-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 flex items-center gap-3 shadow-2xl">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    사진 촬영하기
+                </button>
+                <button onclick="document.getElementById('fileInput').click()" class="bg-white/20 backdrop-blur text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/30 transition-all transform hover:scale-105 flex items-center gap-3 border-2 border-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    갤러리에서 선택
+                </button>
+            </div>
+            
+            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+                    <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                    </svg>
+                    <h3 class="text-xl font-bold mb-2">1. 촬영</h3>
+                    <p>옷장을 찍어주세요</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+                    <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                    <h3 class="text-xl font-bold mb-2">2. 분석</h3>
+                    <p>AI가 자동으로 인식</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur p-6 rounded-xl">
+                    <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    <h3 class="text-xl font-bold mb-2">3. 추천</h3>
+                    <p>맞춤형 코디 제안</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 업로드 화면 -->
+    <div id="upload-view" class="hidden min-h-screen bg-gradient-to-br from-blue-600 to-cyan-400 p-8">
+        <div class="max-w-4xl mx-auto">
+            <button onclick="resetApp()" class="mb-6 text-white flex items-center gap-2 hover:underline">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                처음으로
+            </button>
+            
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <div class="p-8">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800">업로드된 사진</h2>
+                    <div class="mb-6">
+                        <img id="uploadedImage" src="" alt="Uploaded closet" class="w-full rounded-xl shadow-lg max-h-96 object-contain bg-gray-100">
+                    </div>
+                    <button onclick="analyzeCloset()" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        </svg>
+                        AI 분석 시작하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 분석 화면 -->
+    <div id="analysis-view" class="hidden min-h-screen bg-gradient-to-br from-emerald-600 to-teal-400 p-8">
+        <div class="max-w-6xl mx-auto">
+            <button onclick="resetApp()" class="mb-6 text-white flex items-center gap-2 hover:underline">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                처음으로
+            </button>
+
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-3">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    의류 분석 완료
+                </h2>
+
+                <div id="analyzing" class="hidden text-center py-16">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-purple-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <p class="text-xl text-gray-600">AI가 옷장을 분석하고 있습니다...</p>
+                </div>
+
+                <div id="analysisResult">
+                    <div id="clothesList" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"></div>
+
+                    <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-6 mb-6">
+                        <p class="text-lg font-semibold text-gray-800 mb-2">
+                            총 <span id="totalClothes">0</span>개의 의류가 인식되었습니다
+                        </p>
+                        <p class="text-gray-600">
+                            상의 <span id="topCount">0</span>개, 하의 <span id="bottomCount">0</span>개
+                        </p>
+                    </div>
+
+                    <button onclick="getRecommendations()" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                        코디 추천 받기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 추천 화면 -->
+    <div id="recommendation-view" class="hidden min-h-screen bg-gradient-to-br from-indigo-600 to-purple-500 p-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="resetApp()" class="text-white flex items-center gap-2 hover:underline">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    처음으로
+                </button>
+                <button onclick="showView('analysis')" class="text-white flex items-center gap-2 hover:underline">
+                    의류 목록 보기
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        </svg>
+                        오늘의 추천 코디
+                    </h2>
+                    <div class="flex items-center gap-2 text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                        <span>23°C 맑음</span>
+                    </div>
+                </div>
+
+                <div id="recommendationsList" class="space-y-6"></div>
+
+                <div class="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6">
+                    <p class="text-center text-gray-700">
+                        💡 <strong>TIP:</strong> 매일 새로운 코디를 추천받으려면 날씨와 일정을 설정해보세요!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 상태 관리
+        let uploadedImage = null;
+        const mockClothes = [
+            { id: 1, type: '티셔츠', color: '흰색', season: '봄/여름' },
+            { id: 2, type: '청바지', color: '네이비', season: '사계절' },
+            { id: 3, type: '니트', color: '베이지', season: '가을/겨울' },
+            { id: 4, type: '블라우스', color: '분홍색', season: '봄/여름' },
+            { id: 5, type: '슬랙스', color: '회색', season: '사계절' },
+            { id: 6, type: '가디건', color: '검정색', season: '봄/가을' },
+        ];
+
+        const mockRecommendations = [
+            {
+                id: 1,
+                name: '캐주얼 데일리룩',
+                items: ['흰색 티셔츠', '네이비 청바지', '검정 가디건'],
+                occasion: '일상, 가벼운 외출',
+                weather: '20-25°C, 맑음'
+            },
+            {
+                id: 2,
+                name: '오피스 룩',
+                items: ['분홍색 블라우스', '회색 슬랙스'],
+                occasion: '회사, 미팅',
+                weather: '18-23°C, 실내'
+            },
+            {
+                id: 3,
+                name: '따뜻한 가을 스타일',
+                items: ['베이지 니트', '네이비 청바지'],
+                occasion: '카페, 데이트',
+                weather: '15-20°C, 선선함'
+            },
+        ];
+
+        // 파일 선택 처리
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage = e.target.result;
+                    document.getElementById('uploadedImage').src = uploadedImage;
+                    showView('upload');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 뷰 전환
+        function showView(viewName) {
+            const views = ['home', 'upload', 'analysis', 'recommendation'];
+            views.forEach(view => {
+                document.getElementById(view + '-view').classList.add('hidden');
+            });
+            document.getElementById(viewName + '-view').classList.remove('hidden');
+        }
+
+        // 옷장 분석
+        function analyzeCloset() {
+            showView('analysis');
+            document.getElementById('analyzing').classList.remove('hidden');
+            document.getElementById('analysisResult').classList.add('hidden');
+
+            setTimeout(() => {
+                document.getElementById('analyzing').classList.add('hidden');
+                document.getElementById('analysisResult').classList.remove('hidden');
+                
+                // 의류 목록 렌더링
+                const clothesList = document.getElementById('clothesList');
+                clothesList.innerHTML = '';
+                mockClothes.forEach(item => {
+                    clothesList.innerHTML += `
+                        <div class="border-2 border-gray-200 rounded-xl p-4 hover:border-purple-500 transition-colors">
+                            <div class="flex items-center gap-3 mb-2">
+                                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                </svg>
+                                <div>
+                                    <p class="font-bold text-lg">${item.type}</p>
+                                    <p class="text-sm text-gray-600">${item.color}</p>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-2">
+                                계절: ${item.season}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // 통계 업데이트
+                const topTypes = ['티셔츠', '니트', '블라우스', '가디건'];
+                const bottomTypes = ['청바지', '슬랙스'];
+                const topCount = mockClothes.filter(c => topTypes.includes(c.type)).length;
+                const bottomCount = mockClothes.filter(c => bottomTypes.includes(c.type)).length;
+
+                document.getElementById('totalClothes').textContent = mockClothes.length;
+                document.getElementById('topCount').textContent = topCount;
+                document.getElementById('bottomCount').textContent = bottomCount;
+            }, 2000);
+        }
+
+        // 코디 추천
+        function getRecommendations() {
+            showView('recommendation');
+            
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = '';
+            
+            mockRecommendations.forEach(rec => {
+                const itemsHTML = rec.items.map(item => 
+                    `<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">${item}</span>`
+                ).join('');
+
+                recommendationsList.innerHTML += `
+                    <div class="border-2 border-gray-200 rounded-xl p-6 hover:border-purple-500 transition-all hover:shadow-lg">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">${rec.name}</h3>
+                                <p class="text-gray-600">${rec.occasion}</p>
+                            </div>
+                            <button class="text-pink-500 hover:text-pink-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <p class="font-semibold text-gray-700 mb-2">코디 구성:</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${itemsHTML}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                            ${rec.weather}
+                        </div>
+
+                        <button class="mt-4 w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                            </svg>
+                            이 코디 공유하기
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        // 앱 리셋
+        function resetApp() {
+            uploadedImage = null;
+            document.getElementById('fileInput').value = '';
+            showView('home');
+        }
+    </script>
+</body>
+</html>
